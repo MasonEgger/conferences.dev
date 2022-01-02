@@ -34,7 +34,7 @@ jobs:
       env:
         GIT_DEPLOY_KEY: ${{ secrets.GIT_DEPLOY_KEY }}
       run: |
-        cd output
+        cd public
         mkdir -p ~/.ssh
         eval "$(ssh-agent -s)"
         ssh-keyscan github.com >> ~/.ssh/known_hosts
