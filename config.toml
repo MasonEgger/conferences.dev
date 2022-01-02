@@ -1,0 +1,3 @@
+baseURL = 'https://conferences.dev/'
+languageCode = 'en-us'
+title = 'conferences.dev'
