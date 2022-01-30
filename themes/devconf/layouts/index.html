@@ -37,7 +37,7 @@
                     
                     {{ $topic := .Name}}
                      <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <a class="topic" href="/topics/{{ .Page.Title | urlize }}"> {{ .Page.Title }}</a>
+                        <a class="topic" href="/format/{{ .Page.Title | urlize }}"> {{ .Page.Title }}</a>
                         <span class="badge bg-primary rounded-pill">{{ .Count }}</span>
                     </li>                
                  {{ end }}
