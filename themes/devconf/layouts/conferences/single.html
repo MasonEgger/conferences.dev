@@ -1,0 +1,143 @@
+{{ define "main" }}
+    <div class="row justify-content-start">
+        <div class="col-sm-12 col-md-3 mt-2">
+            <section class="topics-list">
+                <h2>Topics</h2>
+                <ul class="list-group">
+                    {{ $confs := where .Site.Pages "Type" "conferences"}}
+                    {{ range .Params.topics}}
+                        {{ $topic := .}}
+                        {{ $.Scratch.Set "topicCounter" 0}}
+                         <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <a class="topic" href="/topics/{{ . | urlize }}"> {{ . }}</a>
+                            {{ range $confs}}
+                                {{if in .Params.topics $topic}}
+                                    {{ $.Scratch.Add "topicCounter" 1}}
+                                {{end}}
+                            {{end}}
+                            <span class="badge bg-primary rounded-pill">{{ $.Scratch.Get "topicCounter" }}</span>
+                         </li>
+                         
+                     {{ end }}
+ 
+                </ul>
+            </section>
+        </div>
+        <div class="col-sm-12 col-md-9 mt-2">
+                <h2 style="display: inline">{{ .Title }} </h2>
+                <a href="https://twitter.com/{{ .Params.Twitter }}"><i class="bi-twitter" style="color:cornflowerblue"></i></a>
+                <a href="https://youtube.com/c/{{ .Params.YouTube }}"><i class="bi-youtube" style="color:red"></i></a>
+
+                    <!-- This is an interesting section that creates two vars, cfpOpen
+                    and cfpClose with times that would both be false in the if statement
+                    below. This is to ensure that if only one of the variables cfp_open_date
+                    or cfp_close_date is supplied it doesn't provide a false positive.
+                    Since this is go they have to be of time type. Then we use the 
+                    with blocks to convert the time that is provided, or to ignore
+                    it and leave the defaults if left blank.-->
+                    {{ $startDate := time "3970-01-01"}}
+                    {{ $endDate := time "1970-01-01"}}
+                    {{with .Params.start_date}}
+                        {{ $startDate = time . }}
+                    {{ end }}
+        
+                    {{ with .Params.end_date}}
+                        {{ $endDate = time .}}           
+                    {{ end }}
+                
+
+                    <!-- This checks if the conference is in the future or is happening-->
+                    {{ if or ($startDate.After now) ($endDate.Before now)}}
+                    
+                        {{ with .Params.registration_url }}
+               
+                        <a href="{{ . }}" class="btn btn-primary float-end">Register</a>
+
+                        {{ end }}
+                    
+                    {{ end }}
+                <br>
+                <span style="font-style: italic; display: block;">{{ dateFormat "Monday, January 2, 2006" .Params.start_date }} - {{ dateFormat "Monday, January 2, 2006" .Params.end_date }}</span>
+                <span><i class="bi-geo-alt-fill">
+                    
+                    {{ with .Params.Format }}   
+                    <span style="font-weight: bold;">{{ replace . "-" " " | title}} - ></span>
+                    {{ end }} 
+                    {{with .Params.City }}
+                        {{ . }}, 
+                    {{end}} 
+                    {{ with .Params.State }}
+                        {{ . }},
+                    {{end }} 
+                    {{ with .Params.Country }}
+                        {{ . }} 
+                    {{ end }}
+                    </i>
+
+                </span>
+                </div>
+                <div class="w-100"></div>
+                <div class="row justify-content-md-center">
+                            
+                <div class="col-sm-12 col-md-6">
+                <!-- This is an interesting section that creates two vars, cfpOpen
+                    and cfpClose with times that would both be false in the if statement
+                    below. This is to ensure that if only one of the variables cfp_open_date
+                    or cfp_close_date is supplied it doesn't provide a false positive.
+                    Since this is go they have to be of time type. Then we use the 
+                    with blocks to convert the time that is provided, or to ignore
+                    it and leave the defaults if left blank.-->
+                {{ $cfpOpen := time "3970-01-01"}}
+                {{ $cfpClose := time "1970-01-01"}}
+                {{with .Params.cfp_open_date}}
+                    {{ $cfpOpen = time . }}
+                {{ end }}
+    
+                {{ with .Params.cfp_close_date}}
+                    {{ $cfpClose = time .}}           
+                {{ end }}
+    
+                
+                <!-- This checks if the Call for Proposals is in fact open and present
+                    the URL if it is -->
+                {{ if and ($cfpOpen.Before now) ($cfpClose.After now)}}
+                <div class="alert alert-primary" role="alert">
+                    {{ .Title }}'s CFP is open until {{dateFormat "Monday, January 2, 2006" .Params.cfp_close_date}}. 
+                    
+                    {{ with .Params.cfp_url }}
+                        <a href={{ . }} class="btn btn-primary">Submit Your Talk.</a>
+                    {{ else }}
+                        on their site.
+                    {{ end }}
+                </div>
+                
+                {{ end }}
+            
+                <img src="{{ .Params.image }}" class="img-fluid mx-auto d-block" alt="{{ .Params.image_alt_text }}">
+                <h3>Description</h3>
+                {{ .Content }}
+
+                {{ if (and (isset .Params "venue_gmaps_link") (not (eq .Params.venue_gmaps_link "")))}}
+                <h3 style="display: inline">Location</h3>
+                <span><i class="bi-geo-alt-fill">
+                    {{with .Params.City }}
+                        {{ . }}, 
+                    {{end}} 
+                    {{ with .Params.State }}
+                        {{ . }},
+                    {{end }} 
+                    {{ with .Params.Country }}
+                        {{ . }} 
+                    {{ end }}
+                    </i>
+
+                </span>
+                
+
+                    {{ safeHTML $.Params.venue_gmaps_link }}
+                {{ end }}
+
+            </div>
+        </div>   
+    </div>
+{{ end }}

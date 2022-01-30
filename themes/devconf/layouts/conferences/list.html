@@ -1,0 +1,47 @@
+{{ define "main"}}
+
+<div class="row justify-content-start">
+    
+    <div class="col-sm-12 col-md-9 offset-md-2 mt-2">
+    <h1>{{ .Title }}</h1>
+
+
+    {{ .Content }}
+    <section class="conferences">
+    {{ $prevMonth := 0}}
+    {{ $currMonth := "" }}
+    {{ range .Pages.GroupByParam "start_date"}}
+
+        {{ range .Pages }}
+                {{ $currMonth = (dateFormat "01" .Params.start_date)}}
+                
+                {{ if ((time .Params.end_date).After now)}}
+                    
+                    {{ if not (eq $currMonth $prevMonth) }}
+                        <h3>{{dateFormat "January 2006" .Params.start_date}}</h3>
+                    {{ end }}
+                {{ end }}
+                {{ $prevMonth = $currMonth}}
+            {{ if ((time .Params.end_date).After now)}}
+            <section class="conference">
+                <ul>
+                    <li><a href="{{ .RelPermalink }}">{{ .Title }}</a>: <span style="font-weight: bold;">{{ replace .Params.format "-" " " | title}} </span> - <span class= "conf-date" style="font-style: italic;">{{ dateFormat "Monday, January 2, 2006" .Params.start_date }} - {{ dateFormat "Monday, January 2, 2006" .Params.end_date }}</span> 
+                    
+                        <ul>  
+                            <li>
+                                {{ range .Params.topics}}
+                                    <a class="topic btn btn-secondary btn-sm topic" href="/topics/{{ . | urlize }}"> {{ . }}</a>
+                                {{ end }}</ul>
+                            </li>
+                    </li>
+                </ul>
+            </section>
+            {{ end }}
+        {{ end }}
+    {{ end }}
+    </section>
+
+    </div>
+</div>
+{{ end }}
+

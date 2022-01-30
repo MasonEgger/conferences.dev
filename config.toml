@@ -1,3 +1,11 @@
 baseURL = 'https://conferences.dev/'
 languageCode = 'en-us'
 title = 'conferences.dev'
+theme = "devconf"
+
+[taxonomies]
+    topic = "topics"
+    country = "country"
+    state = "state"
+    city = "city"
+    format = "format"

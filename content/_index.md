@@ -1,3 +1,4 @@
-# Coming Soon!
+# conferences.dev
 
-conferences.dev is in development. This site will be a repository of developer conferences
+conferences.dev is in an open repository of open source, software engineering,
+and developer conferences.
